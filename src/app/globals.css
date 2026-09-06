@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+@theme {
+  --font-nanum: "Nanum Gothic Coding", monospace;
+}
+
+/* Temporary layout guides — single toggle: 1 = visible, 0 = hidden */
+:root {
+  --show-guides: 0;
+  --text-area-darkening: 0.3;
+  --main-text-color: white;
+  --highlight-color: #dd9ff5;
+  --particle-opacity: 1
+}
+
+.guide {
+  outline: 1px dashed rgb(255 255 255 / calc(var(--show-guides) * 0.4));
+  outline-offset: -1px;
+}
+
+
+/* change val*/
+.textboxBackground {
+  background-color: rgba(0,0,0,var(--text-area-darkening));
+  /* box-shadow: inset 0 0 20px 20px rgb(0, 0, 0, 0); */
+  color: var(--main-text-color)
+}
+
+.textbox {
+  color: var(--main-text-color);
+  text-align: left;
+  justify-content: top;
+  padding: 1rem;
+}
+
+.highlight{
+  color: var(--highlight-color);
+}
+
+.behind-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;        /* Pushes it behind the parent's normal content */
+  background-color: rgba(0,0,0,calc(1-var(--particle-opacity))); /* Example style */
+}
+
+
+html,
+body {
+  background: #000;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
