@@ -33,7 +33,7 @@ export default function Header() {
           key={item.href}
           href={item.href}
           aria-label={item.label}
-          className="group guide relative flex items-center self-stretch px-6 font-nanum text-xs tracking-[0.2em] text-white select-none transition-colors duration-300 hover:bg-white/[0.1] hover:text-highlight"
+          className="group guide relative flex items-center self-stretch px-4 md:px-6 font-nanum text-xs tracking-[0.2em] text-white select-none transition-colors duration-300 hover:bg-white/[0.1] hover:text-highlight"
         >
           {item.label}
           {/* underline for buttons */}
