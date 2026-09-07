@@ -12,7 +12,7 @@ export default function Page() {
       <div className="relative flex h-full flex-1">
         <div className="guide flex flex-1 flex-col items-center justify-center gap-0 md:flex-[2]">
           <div className="guide textboxBackground font-nanum h-[calc(60vh+4rem)] w-4/5 md:w-full md:max-w-md">
-            <div className="guide textbox text-[1.5rem] h-16 w-max">Hi I'm <span className="highlight">jj_disaster ⚞^. .^⚟</span></div>
+            <div className="guide textbox text-[1rem] h-16 w-max md:text-[1.5rem]">Hi I&apos;m <span className="highlight">jj_disaster ⚞^. .^⚟</span></div>
               
             <div className="guide textbox text-base h-max w-full">meow meow meow meow meow meow meow (to be description) blah blah blah blah blah</div>
           </div>

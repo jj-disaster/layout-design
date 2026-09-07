@@ -22,7 +22,7 @@ export async function createCloudBackground( container, options = {} ) {
     particleExponent = 18,
     // Used when three.js falls back to its WebGL2 backend (transform-feedback
     // compute is far slower than WebGPU compute). Set to 0 to keep full count.
-    fallbackParticleExponent = 16,
+    fallbackParticleExponent = 14,
     clearColor = '#000000',
     cameraDriftSpeed = 0.03,
     bloomEnabled = true,

@@ -23,7 +23,7 @@ export default function Header() {
   const showGuideToggle = process.env.NODE_ENV === "development";
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 flex h-12 items-center gap-8 bg-black/100 px-6">
+    <header className="fixed inset-x-0 top-0 z-50 flex h-12 items-center gap-0 bg-black/100 px-0">
       <div
         aria-hidden="true"
         className="guide absolute inset-x-0 bottom-0 h-px"
@@ -33,7 +33,7 @@ export default function Header() {
           key={item.href}
           href={item.href}
           aria-label={item.label}
-          className="group guide relative flex items-center self-stretch px-4 font-nanum text-xs tracking-[0.2em] text-white select-none transition-colors duration-300 hover:bg-white/[0.1] hover:text-highlight"
+          className="group guide relative flex items-center self-stretch px-6 font-nanum text-xs tracking-[0.2em] text-white select-none transition-colors duration-300 hover:bg-white/[0.1] hover:text-highlight"
         >
           {item.label}
           {/* underline for buttons */}
