@@ -51,10 +51,8 @@ export async function createCloudBackground( container, options = {} ) {
   const gravityConstant = 6.67e-11;
 
   // ---- Age ----
-  const ageEnabled = uniform( 0 );
   const ageLifespan = uniform( 3 );
   const ageLifespanVariation = uniform( 1 );
-  const ageResetVelocity = uniform( 0 );
   const randomizeStartingAge = uniform( 1 );
 
   // ---- Flow Field: Flow ----
@@ -300,8 +298,6 @@ export async function createCloudBackground( container, options = {} ) {
     const position = positionBuffer.element( instanceIndex );
     const velocity = velocityBuffer.element( instanceIndex );
     const age = ageBuffer.element( instanceIndex );
-    const maxAge = maxAgeBuffer.element( instanceIndex );
-    const initialPosition = initialPositionBuffer.element( instanceIndex );
 
     // age
 
@@ -393,22 +389,10 @@ export async function createCloudBackground( container, options = {} ) {
     position.addAssign( velocity.mul( delta ) );
 
     // age
-
-    If( ageEnabled.equal( 1 ).and( age.greaterThanEqual( maxAge ) ), () => {
-
-      position.assign( initialPosition );
-
-      If( ageResetVelocity.equal( 1 ), () => {
-
-        const phi = hash( instanceIndex.add( resetSeed.mul( 4 ) ) ).mul( PI ).mul( 2 );
-        const theta = hash( instanceIndex.add( resetSeed.mul( 5 ) ) ).mul( PI );
-        velocity.assign( sphericalToVec3( phi, theta ).mul( 0.05 ) );
-
-      } );
-
-      age.assign( 0 );
-
-    } );
+    // age only increments here. The old age-reset branch is omitted because it
+    // read maxAge/initialPosition, which on three.js's WebGL2 fallback would
+    // register 5 transform-feedback varyings — over the mobile limit of 4.
+    // With the age system disabled by default this had no visible effect.
 
     // box loop
 

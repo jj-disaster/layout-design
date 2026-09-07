@@ -43,40 +43,42 @@ export default function Header() {
           /> */}
         </Link>
       ))}
-      {showGuideToggle && (
+      <div className="guide ml-auto flex items-center">
+        {showGuideToggle && (
+          <button
+            type="button"
+            aria-label="toggle layout guide lines"
+            aria-pressed={showGuides}
+            onClick={toggleGuides}
+            className="guide flex items-center justify-center p-3 text-white select-none transition-colors duration-300 hover:bg-white/[0.06] hover:text-highlight"
+          >
+            <span
+              aria-hidden="true"
+              className={`text-sm leading-none transition-colors ${
+                showGuides ? "text-highlight" : "text-white/30"
+              }`}
+            >
+              ✓
+            </span>
+          </button>
+        )}
         <button
           type="button"
-          aria-label="toggle layout guide lines"
-          aria-pressed={showGuides}
-          onClick={toggleGuides}
-          className="guide ml-auto flex items-center justify-center p-3 text-white select-none transition-colors duration-300 hover:bg-white/[0.06] hover:text-highlight"
+          aria-label="sidebar navigator"
+          aria-pressed={catOn}
+          onClick={() => setCatOn(!catOn)}
+          className="guide p-3 text-white select-none transition-colors duration-300 hover:bg-white/[0.06] hover:text-highlight"
         >
           <span
             aria-hidden="true"
-            className={`text-sm leading-none transition-colors ${
-              showGuides ? "text-highlight" : "text-white/30"
+            className={`font-nanum text-xs tracking-[0.2em] transition-colors ${
+              catOn ? "text-highlight" : ""
             }`}
           >
-            ✓
+            ⚞^. .^⚟
           </span>
         </button>
-      )}
-      <button
-        type="button"
-        aria-label="sidebar navigator"
-        aria-pressed={catOn}
-        onClick={() => setCatOn(!catOn)}
-        className="guide p-3 text-white select-none transition-colors duration-300 hover:bg-white/[0.06] hover:text-highlight"
-      >
-        <span
-          aria-hidden="true"
-          className={`font-nanum text-xs tracking-[0.2em] transition-colors ${
-            catOn ? "text-highlight" : ""
-          }`}
-        >
-          ⚞^. .^⚟
-        </span>
-      </button>
+      </div>
     </header>
   );
 }
