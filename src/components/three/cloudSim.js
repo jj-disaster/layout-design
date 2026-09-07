@@ -239,13 +239,15 @@ export async function createCloudBackground( container, options = {} ) {
   } );
 
   // init compute
+  // Split into two passes so the WebGL2 transform-feedback fallback never
+  // writes more than MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS output varyings
+  // (guaranteed >= 4 on mobile GPUs; desktop WebGPU has no such limit).
+  // Pass A: position / initialPosition / velocity (3 outputs)
 
-  const init = Fn( () => {
+  const initPosition = Fn( () => {
 
     const position = positionBuffer.element( instanceIndex );
     const velocity = velocityBuffer.element( instanceIndex );
-    const age = ageBuffer.element( instanceIndex );
-    const maxAge = maxAgeBuffer.element( instanceIndex );
     const initialPosition = initialPositionBuffer.element( instanceIndex );
 
     const basePosition = vec3(
@@ -261,6 +263,16 @@ export async function createCloudBackground( container, options = {} ) {
     const baseVelocity = sphericalToVec3( phi, theta ).mul( 0.05 );
     velocity.assign( baseVelocity );
 
+  } );
+  const initPositionCompute = initPosition().compute( particleCount ).setName( 'Init Particles (position)' );
+
+  // Pass B: age / maxAge (2 outputs)
+
+  const initAge = Fn( () => {
+
+    const age = ageBuffer.element( instanceIndex );
+    const maxAge = maxAgeBuffer.element( instanceIndex );
+
     const particleMaxAge = float( ageLifespan ).add( hash( instanceIndex.add( uint( Math.random() * 0xffffff ) ) ).mul( 2 ).sub( 1 ).mul( ageLifespanVariation ) );
     maxAge.assign( particleMaxAge );
 
@@ -275,8 +287,7 @@ export async function createCloudBackground( container, options = {} ) {
     } );
 
   } );
-
-  const initCompute = init().compute( particleCount );
+  const initAgeCompute = initAge().compute( particleCount ).setName( 'Init Particles (age)' );
 
   // update compute
 
@@ -433,7 +444,8 @@ export async function createCloudBackground( container, options = {} ) {
   const mesh = new THREE.InstancedMesh( geometry, material, particleCount );
   scene.add( mesh );
 
-  renderer.compute( initCompute );
+  renderer.compute( initPositionCompute );
+  renderer.compute( initAgeCompute );
 
   // ambient camera drift (replaces OrbitControls)
 
