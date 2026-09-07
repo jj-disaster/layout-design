@@ -30,7 +30,7 @@ export default function Page() {
       <div className="guide flex justify-center px-6 pt-6">
         <Link
           href="/work/demo"
-          className="guide px-4 py-2 font-nanum text-[11px] tracking-[0.2em] text-white transition-colors duration-300 hover:bg-white/[0.06] hover:text-[#dd9ff5]"
+          className="guide px-4 py-2 font-nanum text-[11px] tracking-[0.2em] text-white transition-colors duration-300 hover:bg-white/[0.06] hover:text-highlight"
         >
           Template →
         </Link>

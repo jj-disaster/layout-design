@@ -7,11 +7,11 @@ export default function Page() {
       title="Project Title"
       subtitle="Subtitle / 2026"
       images={[
-        { label: "01", color: "#e63946" },
-        { label: "02", color: "#f4a261" },
-        { label: "03", color: "#2a9d8f" },
-        { label: "04", color: "#dd9ff5" },
-        { label: "05", color: "#e9ecef" },
+        { label: "1", color: "#e63946" },
+        { label: "2", color: "#f4a261" },
+        { label: "3", color: "#2a9d8f" },
+        { label: "4", color: "#dd9ff5" },
+        { label: "5", color: "#e9ecef" },
       ]}
     />
   );

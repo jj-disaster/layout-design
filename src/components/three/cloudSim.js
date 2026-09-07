@@ -44,6 +44,7 @@ export async function createCloudBackground( container, options = {} ) {
   const particleGlobalMass = uniform( Number( `1e${4}` ) );
   const timeScale = uniform( 1 );
   const maxSpeed = uniform( 10 );
+  const colorTopSpeed = uniform(5);
   const velocityDamping = uniform( 0.1 );
   const velocityDecay = uniform( 1 );
   const boundHalfExtent = uniform( 15 );
@@ -112,7 +113,7 @@ export async function createCloudBackground( container, options = {} ) {
 
   // ---- Render ----
   const colorA = uniform( color( '#c0c0c0' ) );
-  const colorB = uniform( color( '#af00f5' ) );
+  const colorB = uniform( color( '#ad76c2' ) );
   const colorAOpacity = uniform( 1 );
   const colorBOpacity = uniform( 1 );
   const materialOpacity = uniform( 1);
@@ -414,7 +415,7 @@ export async function createCloudBackground( container, options = {} ) {
 
     const velocity = velocityBuffer.toAttribute();
     const speed = velocity.length();
-    const colorMix = speed.div( maxSpeed ).smoothstep( 0, 1 );
+    const colorMix = speed.div( colorTopSpeed ).smoothstep( 0, 1 );
     const finalColor = mix( colorA, colorB, colorMix );
     const alpha = mix( colorAOpacity, colorBOpacity, colorMix ).mul( materialOpacity );
 

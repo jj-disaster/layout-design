@@ -1,17 +1,18 @@
 @import "tailwindcss";
 
-@theme {
+@theme inline {
   --font-nanum: "Nanum Gothic Coding", monospace;
   --font-sans: "Nanum Gothic Coding", monospace;
+  --color-highlight: var(--highlight-color);
 }
 
 /* Temporary layout guides — single toggle: 1 = visible, 0 = hidden */
 :root {
-  --show-guides: 1;
+  --show-guides: 0;
   --text-area-darkening: 0.5;
   --main-text-color: white;
   --highlight-color: #dd9ff5;
-  --particle-opacity: 0.8
+  --particle-opacity: 0.6;
 }
 
 .guide {
