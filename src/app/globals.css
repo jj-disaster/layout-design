@@ -2,15 +2,16 @@
 
 @theme {
   --font-nanum: "Nanum Gothic Coding", monospace;
+  --font-sans: "Nanum Gothic Coding", monospace;
 }
 
 /* Temporary layout guides — single toggle: 1 = visible, 0 = hidden */
 :root {
-  --show-guides: 0;
-  --text-area-darkening: 0.3;
+  --show-guides: 1;
+  --text-area-darkening: 0.5;
   --main-text-color: white;
   --highlight-color: #dd9ff5;
-  --particle-opacity: 1
+  --particle-opacity: 0.8
 }
 
 .guide {
@@ -43,8 +44,9 @@
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: -1;        /* Pushes it behind the parent's normal content */
-  background-color: rgba(0,0,0,calc(1-var(--particle-opacity))); /* Example style */
+  pointer-events: none;
+  /* Sits above the canvas (DOM order) but below the content that follows. */
+  background-color: rgba(0, 0, 0, calc(1 - var(--particle-opacity)));
 }
 
 

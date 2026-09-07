@@ -11,9 +11,10 @@
 // unchanged from the original piece.
 
 import * as THREE from 'three/webgpu';
-import { float, If, PI, color, cos, instanceIndex, Loop, min, mix, mod, sin, instancedArray, Fn, uint, uniform, uniformArray, hash, vec3, vec4, mx_fractal_noise_vec3 } from 'three/tsl';
+import { float, If, PI, color, cos, instanceIndex, Loop, min, mix, mod, pass, sin, instancedArray, Fn, uint, uniform, uniformArray, hash, vec3, vec4, mx_fractal_noise_vec3 } from 'three/tsl';
 
 import { curlNoise } from 'three/examples/jsm/tsl/math/curlNoise.js';
+import { bloom } from 'three/examples/jsm/tsl/display/BloomNode.js';
 
 export async function createCloudBackground( container, options = {} ) {
 
@@ -24,6 +25,10 @@ export async function createCloudBackground( container, options = {} ) {
     fallbackParticleExponent = 16,
     clearColor = '#000000',
     cameraDriftSpeed = 0.03,
+    bloomEnabled = true,
+    bloomStrength = 1,
+    bloomRadius = 0.2,
+    bloomThreshold = 0.4,
   } = options;
 
   // ================================================================
@@ -53,13 +58,13 @@ export async function createCloudBackground( container, options = {} ) {
 
   // ---- Flow Field: Flow ----
   const flowEnabled = uniform( 1 );
-  const flowStrength = uniform( 0.5 );
+  const flowStrength = uniform(3);
   const flowNoiseCurlWeight = uniform( 1 );
   const flowNoiseFractalWeight = uniform( 0 );
 
   // ---- Flow Field: Proximity ----
   const proximityFlowEnabled = uniform( 1 );
-  const proximityFlowStrength = uniform( 0.8 );
+  const proximityFlowStrength = uniform( 3 );
   const proximityNoiseCurlWeight = uniform( 0 );
   const proximityNoiseFractalWeight = uniform( 1 );
   const proximityInfluenceRadius = uniform( 1.5 );
@@ -68,7 +73,7 @@ export async function createCloudBackground( container, options = {} ) {
   // ---- Noise: Curl ----
   const noiseCurlSpeed = { value: 0 };
   const noiseCurlTime = uniform( 0 );
-  const noiseCurlFrequency = uniform( 0.25 );
+  const noiseCurlFrequency = uniform( 1.25 );
 
   // ---- Noise: Fractal ----
   const noiseFractalSpeed = { value: 0 };
@@ -79,38 +84,35 @@ export async function createCloudBackground( container, options = {} ) {
   const noiseFractalDiminish = uniform( 1 );
 
   // ---- Attractors ----
-  // (positions / axes only — no helper meshes or gizmos in background mode)
-  const attractorsPositions = uniformArray( [
-    new THREE.Vector3( - 1, 0, 0 ),
-    new THREE.Vector3( 1, 0, - 0.5 ),
-    new THREE.Vector3( 0, 0.5, 1 ),
-    new THREE.Vector3( 1, 0.5, 1 ),
-    new THREE.Vector3( 0, 2, -0.5 ),
-  ] );
-  const attractorsRotationAxes = uniformArray( [
-    new THREE.Vector3( 0, 1, 0 ).normalize(),
-    new THREE.Vector3( 1, 0, 0 ).normalize(),
-    new THREE.Vector3( 0, 0, - 0.5 ).normalize(),
-    new THREE.Vector3( 0.2, 0.8, 0.4 ).normalize(),
-    new THREE.Vector3( - 0.5, 0.3, 0.8 ).normalize(),
-  ] );
-  const attractorsLength = uniform( attractorsPositions.array.length, 'uint' );
-  const attractorMasses = uniformArray( new Array( attractorsPositions.array.length ).fill(1) );
+  // (row-based: { position, axis, enabled, mass, strength, repel } per
+  // attractor — no helper meshes or gizmos in background mode)
+  // Values copied verbatim from the original test scene's .fill() definitions.
+  const attractors = [
+    { position: [ - 1, 0, 0 ], axis: [ 0, 1, 0 ], enabled: 1, mass: 1, strength: 1, repel: 0 },
+    { position: [ 1, 0, - 0.5 ], axis: [ 1, 0, 0 ], enabled: 1, mass: 1, strength: 1, repel: 0 },
+    { position: [ 0, 0.5, 1 ], axis: [ 0, 0, - 0.5 ], enabled: 1, mass: 1, strength: 1, repel: 0 },
+    { position: [ 1, 0.5, 1 ], axis: [ 0.2, 0.8, 0.4 ], enabled: 0, mass: 1, strength: 3, repel: 1 },
+    { position: [ 0, 2, - 0.5 ], axis: [ - 0.5, 0.3, 0.8 ], enabled: 0, mass: 1, strength: 1, repel: 1 },
+  ];
+  const attractorsLength = uniform( attractors.length, 'uint' );
+  const attractorsPositions = uniformArray( attractors.map( a => new THREE.Vector3( ...a.position ) ) );
+  const attractorsRotationAxes = uniformArray( attractors.map( a => new THREE.Vector3( ...a.axis ).normalize() ) );
+  const attractorMasses = uniformArray( attractors.map( a => a.mass ) );
   // First 3 attractors on, rest off — matches the original test scene.
-  const attractorEnabled = uniformArray( new Array( attractorsPositions.array.length ).fill(1,0,4).fill(0,3) );
-  const attractorStrengths = uniformArray( new Array( attractorsPositions.array.length ).fill( 1) );
-  const attractorRepel = uniformArray( new Array( attractorsPositions.array.length ).fill(0,0,3).fill(1) );
+  const attractorEnabled = uniformArray( attractors.map( a => a.enabled ) );
+  const attractorStrengths = uniformArray( attractors.map( a => a.strength ) );
+  const attractorRepel = uniformArray( attractors.map( a => a.repel ) );
   const attractorsEnabled = uniform( 1 );
-  const globalAttractorStrength = uniform( 1 );
+  const globalAttractorStrength = uniform( 3 );
   const spinningStrength = uniform( 2.31 );
-  const gravityStrengthMultiplier = uniform( 0.25 );
+  const gravityStrengthMultiplier = uniform( 0.35 );
   const resetRadius = uniform( 0.1 );
   const resetEnabled = uniform( 0 );
   const resetSeed = uniform( uint( Math.random() * 0xffffff ) );
 
   // ---- Render ----
-  const colorA = uniform( color( '#2a2a2a' ) );
-  const colorB = uniform( color( '#8e689d' ) );
+  const colorA = uniform( color( '#c0c0c0' ) );
+  const colorB = uniform( color( '#af00f5' ) );
   const colorAOpacity = uniform( 1 );
   const colorBOpacity = uniform( 1 );
   const materialOpacity = uniform( 1);
@@ -120,6 +122,10 @@ export async function createCloudBackground( container, options = {} ) {
   const particleBlending = THREE.NormalBlending;
   // const particleBlending = THREE.AdditiveBlending;
 
+  // ---- Bloom ----
+  // (bloomStrength / bloomRadius / bloomThreshold / bloomEnabled come from
+  // `options` above — see BloomNode for details)
+
   // ================================================================
   // End of PARAMETERS — machinery below, no tunables.
   // ================================================================
@@ -127,7 +133,7 @@ export async function createCloudBackground( container, options = {} ) {
   const width = container.clientWidth || window.innerWidth;
   const height = container.clientHeight || window.innerHeight;
 
-  const camera = new THREE.PerspectiveCamera( 50, width / height, 0.0001, 10000 );
+  const camera = new THREE.PerspectiveCamera( 50, width / height, 0.0001, 1000 );
   camera.position.set( 3, 5, 8 );
 
   const scene = new THREE.Scene();
@@ -150,6 +156,31 @@ export async function createCloudBackground( container, options = {} ) {
 
   renderer.domElement.style.display = 'block';
   container.appendChild( renderer.domElement );
+
+  // render pipeline (scene pass + TSL bloom)
+
+  const scenePass = pass( scene, camera );
+  let bloomPassNode = null;
+  const renderPipeline = new THREE.RenderPipeline( renderer );
+
+  if ( bloomEnabled ) {
+
+    const scenePassColor = scenePass.getTextureNode( 'output' );
+    bloomPassNode = bloom( scenePassColor, bloomStrength, bloomRadius, bloomThreshold );
+    renderPipeline.outputNode = scenePassColor.add( bloomPassNode );
+
+  } else {
+
+    renderPipeline.outputNode = scenePass;
+
+  }
+
+  const renderFrame = () => {
+
+    if ( bloomEnabled ) renderPipeline.render();
+    else renderer.render( scene, camera );
+
+  };
 
   // particles
 
@@ -220,7 +251,7 @@ export async function createCloudBackground( container, options = {} ) {
       hash( instanceIndex.add( uint( Math.random() * 0xffffff ) ) ),
       hash( instanceIndex.add( uint( Math.random() * 0xffffff ) ) ),
       hash( instanceIndex.add( uint( Math.random() * 0xffffff ) ) )
-    ).sub( 0.5 ).mul( vec3( 5, 5, 5 ) ).add( vec3( 0, 1, 0 ) );
+    ).sub( 0.5 ).mul( vec3( 15,15, 15 ) ).add( vec3( 0, 1, 0 ) );
     position.assign( basePosition );
     initialPosition.assign( basePosition );
 
@@ -451,13 +482,13 @@ export async function createCloudBackground( container, options = {} ) {
     camera.lookAt( 0, 1, 0 );
 
     renderer.compute( updateCompute );
-    renderer.render( scene, camera );
+    renderFrame();
 
   } );
 
   // render one frame immediately so reduced-motion still shows the field
   renderer.compute( updateCompute );
-  renderer.render( scene, camera );
+  renderFrame();
 
   return () => {
 
@@ -467,6 +498,8 @@ export async function createCloudBackground( container, options = {} ) {
     scene.remove( mesh );
     geometry.dispose();
     material.dispose();
+    renderPipeline.dispose();
+    if ( bloomPassNode ) bloomPassNode.dispose();
     renderer.dispose();
     if ( renderer.domElement.parentElement === container ) {
 

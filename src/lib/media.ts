@@ -3,7 +3,7 @@
 // next/link and the router respect `basePath` automatically, but raw
 // <img>/<video>/<audio> src strings do NOT. Route every media URL through
 // withBasePath() so files resolve both locally (no base path) and on
-// GitHub Pages (PAGES_BASE_PATH=/portfolio, exposed as
+// GitHub Pages (PAGES_BASE_PATH=/layout-design, exposed as
 // NEXT_PUBLIC_BASE_PATH in next.config.ts).
 
 export function withBasePath(path: string): string {

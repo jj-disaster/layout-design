@@ -4,8 +4,8 @@ import ProjectTemplate from "@/components/work/ProjectTemplate";
 export default function Page() {
   return (
     <ProjectTemplate
-      title="PROJECT TITLE"
-      subtitle="SUBTITLE / 2026"
+      title="Project Title"
+      subtitle="Subtitle / 2026"
       images={[
         { label: "01", color: "#e63946" },
         { label: "02", color: "#f4a261" },

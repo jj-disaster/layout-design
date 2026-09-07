@@ -4,6 +4,9 @@ export default function Page() {
   return (
     <div className="relative h-full bg-black">
       <CloudBackground />
+      {/* darkens the particle system*/}
+      <div className="behind-content"></div>
+
       {/* Temporary guides: toggle with --show-guides in globals.css */}
       {/* On mobile the text column goes full-width; 2/5-1/5-2/5 from md: up */}
       <div className="relative flex h-full flex-1">
@@ -11,7 +14,7 @@ export default function Page() {
           <div className="guide textboxBackground font-nanum h-[calc(60vh+4rem)] w-max">
             <div className="guide textbox text-[1.5rem] h-16 w-max">Hi I'm <span className="highlight">jj_disaster ⚞^. .^⚟</span></div>
               
-            <div className="guide textbox text-2xl h-max w-fill">meow meow meow meow meow meow meow</div>
+            <div className="guide textbox text-base h-max w-fill">meow meow meow meow meow meow meow (to be description)</div>
           </div>
         </div> 
         <div className="guide hidden flex-[1] md:block" />

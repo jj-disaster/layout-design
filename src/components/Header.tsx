@@ -8,7 +8,7 @@ const ITEMS = [
 
 export default function Header() {
   return (
-    <header className="fixed inset-x-0 top-0 z-50 flex h-12 items-center gap-8 bg-black/75 px-6">
+    <header className="fixed inset-x-0 top-0 z-50 flex h-12 items-center gap-8 bg-black/100 px-6">
       <div
         aria-hidden="true"
         className="guide absolute inset-x-0 bottom-0 h-px"

@@ -27,7 +27,7 @@ jobs:
       - name: Build static export
         run: npm run build
         env:
-          PAGES_BASE_PATH: /portfolio
+          PAGES_BASE_PATH: /layout-design
       - uses: actions/upload-pages-artifact@v3
         with:
           path: out

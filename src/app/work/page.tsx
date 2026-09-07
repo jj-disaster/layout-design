@@ -32,7 +32,7 @@ export default function Page() {
           href="/work/demo"
           className="guide px-4 py-2 font-nanum text-[11px] tracking-[0.2em] text-white transition-colors duration-300 hover:bg-white/[0.06] hover:text-[#dd9ff5]"
         >
-          VIEW TEMPLATE →
+          Template →
         </Link>
       </div>
       <div className="flex flex-col">
