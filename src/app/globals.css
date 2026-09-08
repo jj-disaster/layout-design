@@ -27,6 +27,7 @@
   position: absolute;
   top: 0;
   bottom: 0;
+  pointer-events: none; /* decorative overlay — must not block clicks */
   outline: 1px dashed rgb(255 255 255 / calc(var(--show-guides) * 0.4));
   outline-offset: -1px;
 }
