@@ -20,6 +20,54 @@
   outline-offset: -1px;
 }
 
+/* Column outline guides for the works page masonry (mobile only). Outline the
+   two multicol column boxes the same way `.guide` outlines elements. */
+.guide-col {
+  --guide-col-width: calc((100% - 56px) / 2);
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  outline: 1px dashed rgb(255 255 255 / calc(var(--show-guides) * 0.4));
+  outline-offset: -1px;
+}
+
+.guide-col-left {
+  left: 16px; /* px-4 */
+  width: var(--guide-col-width);
+}
+
+.guide-col-right {
+  left: calc(16px + var(--guide-col-width) + 24px); /* px-4 + col + gap-6 */
+  width: var(--guide-col-width);
+}
+
+/* Hide the native scrollbar on scrollable containers (keep scrolling). */
+.no-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+/* Fade-in for work images — starts hidden, fades when `.is-visible` is
+   added by IntersectionObserver in FadeInImage on scroll reveal. */
+.fade-in {
+  opacity: 0;
+  transition: opacity 0.4s ease-out;
+}
+
+.fade-in.is-visible {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fade-in {
+    transition: none;
+  }
+}
+
 
 /* change val*/
 .textboxBackground {

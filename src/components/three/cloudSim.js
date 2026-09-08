@@ -19,7 +19,7 @@ import { bloom } from 'three/examples/jsm/tsl/display/BloomNode.js';
 export async function createCloudBackground( container, options = {} ) {
 
   const {
-    particleExponent = 18,
+    particleExponent = 17,
     // Used when three.js falls back to its WebGL2 backend (transform-feedback
     // compute is far slower than WebGPU compute). Set to 0 to keep full count.
     fallbackParticleExponent = 14,
@@ -43,7 +43,7 @@ export async function createCloudBackground( container, options = {} ) {
   const attractorMass = uniform( Number( `1e${7}` ) );
   const particleGlobalMass = uniform( Number( `1e${4}` ) );
   const timeScale = uniform( 1 );
-  const maxSpeed = uniform( 10 );
+  const maxSpeed = uniform( 30 );
   const colorTopSpeed = uniform(5);
   const velocityDamping = uniform( 0.1 );
   const velocityDecay = uniform( 1 );
@@ -66,13 +66,13 @@ export async function createCloudBackground( container, options = {} ) {
   const proximityFlowStrength = uniform( 3 );
   const proximityNoiseCurlWeight = uniform( 0 );
   const proximityNoiseFractalWeight = uniform( 1 );
-  const proximityInfluenceRadius = uniform( 1.5 );
+  const proximityInfluenceRadius = uniform( 4 );
   const proximityMix = uniform( 0 );
 
   // ---- Noise: Curl ----
-  const noiseCurlSpeed = { value: 0 };
+  const noiseCurlSpeed = { value: 0.1 };
   const noiseCurlTime = uniform( 0 );
-  const noiseCurlFrequency = uniform( 1.25 );
+  const noiseCurlFrequency = uniform( 8 );
 
   // ---- Noise: Fractal ----
   const noiseFractalSpeed = { value: 0 };
@@ -87,10 +87,10 @@ export async function createCloudBackground( container, options = {} ) {
   // attractor — no helper meshes or gizmos in background mode)
   // Values copied verbatim from the original test scene's .fill() definitions.
   const attractors = [
-    { position: [ - 1, 0, 0 ], axis: [ 0, 1, 0 ], enabled: 1, mass: 1, strength: 1, repel: 0 },
-    { position: [ 1, 0, - 0.5 ], axis: [ 1, 0, 0 ], enabled: 1, mass: 1, strength: 1, repel: 0 },
-    { position: [ 0, 0.5, 1 ], axis: [ 0, 0, - 0.5 ], enabled: 1, mass: 1, strength: 1, repel: 0 },
-    { position: [ 1, 0.5, 1 ], axis: [ 0.2, 0.8, 0.4 ], enabled: 0, mass: 1, strength: 3, repel: 1 },
+    { position: [ - 1, 0, 0 ], axis: [ 0, 0.5, 0.5 ], enabled: 1, mass: 1.6, strength: 1, repel: 0 },
+    { position: [ 1, 0, - 0.5 ], axis: [ 1, 0, 0 ], enabled: 1, mass: 2, strength: 1, repel: 0 },
+    { position: [ 0, 0.5, 1 ], axis: [ -0.5, 0, - 0.5 ], enabled: 1, mass: 3, strength: 1, repel: 0 },
+    { position: [ 1, 0.5, 1 ], axis: [ 0.2, 0.8, 0.4 ], enabled: 1, mass: 1, strength: 1, repel: 1 },
     { position: [ 0, 2, - 0.5 ], axis: [ - 0.5, 0.3, 0.8 ], enabled: 0, mass: 1, strength: 1, repel: 1 },
   ];
   const attractorsLength = uniform( attractors.length, 'uint' );
@@ -104,7 +104,7 @@ export async function createCloudBackground( container, options = {} ) {
   const attractorsEnabled = uniform( 1 );
   const globalAttractorStrength = uniform( 3 );
   const spinningStrength = uniform( 2.31 );
-  const gravityStrengthMultiplier = uniform( 0.35 );
+  const gravityStrengthMultiplier = uniform( 1 );
   const resetRadius = uniform( 0.1 );
   const resetEnabled = uniform( 0 );
   const resetSeed = uniform( uint( Math.random() * 0xffffff ) );

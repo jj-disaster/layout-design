@@ -5,7 +5,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 
 export const metadata: Metadata = {
-  title: "Blank",
+  title: "jj_disaster",
   description: "",
 };
 

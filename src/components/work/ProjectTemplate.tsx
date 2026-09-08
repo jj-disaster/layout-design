@@ -6,8 +6,8 @@ export interface ReelImage {
 }
 
 export default function ProjectTemplate({
-  title = "PROJECT TITLE",
-  subtitle = "SUBTITLE",
+  title = "Project Title",
+  subtitle = "Subtitle",
   images = [],
 }: {
   title?: string;
@@ -31,7 +31,7 @@ export default function ProjectTemplate({
         {/* 2 — Image reel: horizontal scroll, grows as images are added */}
         <section className="guide flex w-full flex-col items-center gap-2 py-4">
           <div className="guide flex w-full items-center justify-center py-1 font-nanum text-[11px] tracking-[0.2em] text-white/60">
-            IMAGE REEL — SCROLL →
+            Image Reel
           </div>
           <div className="guide flex w-full snap-x snap-mandatory gap-6 overflow-x-auto p-4">
             {images.map((img) => (
@@ -53,7 +53,7 @@ export default function ProjectTemplate({
           <div className="guide h-3 w-10/12" />
           <div className="guide h-3 w-2/3" />
           <div className="guide mt-1 px-1 py-1 font-nanum text-[11px] tracking-[0.2em] text-white/60">
-            TEXT
+            Description
           </div>
         </section>
       </article>
