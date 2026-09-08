@@ -3,10 +3,12 @@ import "@fontsource/nanum-gothic-coding/400.css";
 import "@fontsource/nanum-gothic-coding/700.css";
 import "./globals.css";
 import Header from "@/components/Header";
+import { withBasePath } from "@/lib/media";
 
 export const metadata: Metadata = {
   title: "jj_disaster",
   description: "",
+  icons: { icon: withBasePath("/favicon.ico") },
 };
 
 export default function RootLayout({
