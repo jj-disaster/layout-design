@@ -69,6 +69,53 @@
   }
 }
 
+/* Thin white outline on hover for work images (non-guide). Unlayered so it
+   beats the layered Tailwind utilities and the .guide rule. Placed after
+   .fade-in so its own transition shorthand wins. */
+.ws-img {
+  outline-color: transparent; /* hide .guide line; fade target is nothing */
+  transition: opacity 0.4s ease-out, outline-color 0.12s ease-out;
+}
+
+.ws-img:hover {
+  outline: 1px solid #afaeae;
+  outline-offset: 0;
+}
+
+/* Skeleton behind work images while they load. The image's own box is reserved
+   with `aspect-ratio` (set inline from its natural dims) so the layout never
+   shifts when the src arrives; this background shows until it does. */
+.skeleton {
+  background-color: rgb(255 255 255 / 0.05);
+  background-image: linear-gradient(
+    110deg,
+    transparent 8%,
+    rgb(255 255 255 / 0.08) 18%,
+    transparent 33%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes skeleton-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* Desktop images size by intrinsic ratio against max-h-[80vh] and flex shrink,
+   which can't be reproduced before the image arrives — keep their natural
+   pre-load behavior there. On mobile the width is definite (w-full), so that's
+   where the reserved box + skeleton actually hold the layout. */
+@media (min-width: 768px) {
+  .ws-img {
+    aspect-ratio: auto !important;
+  }
+}
+
 
 /* change val*/
 .textboxBackground {
@@ -108,4 +155,108 @@ body {
   height: 100%;
   overflow: hidden;
   overscroll-behavior: none;
+}
+
+/* ---- /work/design grid builder ---- */
+
+.design-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  padding: 0 0 14px;
+  font-family: "Nanum Gothic Coding", monospace;
+}
+
+.design-chip {
+  font-family: "Nanum Gothic Coding", monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.7);
+  border: 1px solid rgb(255 255 255 / 0.25);
+  background: transparent;
+  padding: 2px 8px;
+  cursor: pointer;
+  line-height: 1.4;
+  user-select: none;
+}
+
+.design-chip:hover {
+  color: #fff;
+  background: rgb(255 255 255 / 0.1);
+}
+
+.design-chip.is-on {
+  color: #000;
+  background: #fff;
+  border-color: #fff;
+}
+
+.design-chip.is-on:hover {
+  background: #fff;
+}
+
+.design-label {
+  font-family: "Nanum Gothic Coding", monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.5);
+}
+
+.design-input {
+  font-family: "Nanum Gothic Coding", monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: rgb(255 255 255 / 0.8);
+  background: transparent;
+  border: 1px solid rgb(255 255 255 / 0.25);
+  width: 44px;
+  padding: 2px 4px;
+  text-align: center;
+}
+
+.design-hint {
+  font-family: "Nanum Gothic Coding", monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: rgb(255 255 255 / 0.35);
+  margin-left: auto;
+}
+
+.grid-layout-canvas {
+  position: relative;
+  z-index: 10;
+}
+
+.react-grid-layout {
+  transition: height 200ms ease;
+}
+
+/* Drag ghost + resize handle, tuned to this dark canvas. */
+.react-grid-item > .react-resizable-handle {
+  opacity: 0.4;
+  z-index: 3;
+}
+
+.react-grid-item > .react-resizable-handle:hover,
+.react-grid-item.react-draggable-dragging > .react-resizable-handle {
+  opacity: 1;
+}
+
+.react-grid-item.react-draggable-dragging {
+  z-index: 20;
+  opacity: 0.55;
+}
+
+.react-grid-item.react-draggable-dragging,
+.react-grid-item.resizing {
+  transition: none;
+}
+
+.react-grid-layout .react-grid-placeholder {
+  background: rgb(255 255 255 / 0.12);
+  border: 1px dashed rgb(255 255 255 / 0.45);
+  border-radius: 0;
 }

@@ -12,10 +12,16 @@ interface RowItem {
   box?: string;
   src?: string;
   year?: string;
+  /** Natural width/height — used to reserve the image box while loading. */
+  ratio?: number;
 }
 
 export type KeyedItem = string | RowItem;
 export type Column = KeyedItem | KeyedItem[];
+
+// Rows are full-bleed by default; this caps how wide any single row can grow.
+// Tune the default here or pass `maxWidth` per row.
+export const MAX_ROW_WIDTH = 1200;
 
 // Desktop: a stacked column (array of items) must never be taller than the
 // tallest single-image column in its row. Flex-only CSS can't express that
@@ -25,7 +31,13 @@ export type Column = KeyedItem | KeyedItem[];
 //   - give each stacked image an explicit pixel height (distributed across
 //     the capped height) so its width auto-scales from the aspect ratio and
 //     the wrappers hug the real image size instead of the natural one.
-export function Row({ columns }: { columns: Column[] }) {
+export function Row({
+  columns,
+  maxWidth = MAX_ROW_WIDTH,
+}: {
+  columns: Column[];
+  maxWidth?: number;
+}) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -90,6 +102,7 @@ export function Row({ columns }: { columns: Column[] }) {
     <div
       ref={ref}
       className="contents md:flex md:flex-row md:items-stretch md:justify-center md:gap-6 md:px-6 md:py-4"
+      style={{ maxWidth, marginLeft: "auto", marginRight: "auto" }}
     >
       {columns.map((column, c) => {
         const stacked = Array.isArray(column);
@@ -113,7 +126,15 @@ export function Row({ columns }: { columns: Column[] }) {
 function asItem(entry: KeyedItem): { entry: string; item: RowItem } {
   if (typeof entry === "string") {
     const work = works.find((w) => w.slug === entry);
-    return { entry, item: { label: work?.label ?? entry, src: work?.src, year: work?.year } };
+    return {
+      entry,
+      item: {
+        label: work?.label ?? entry,
+        src: work?.src,
+        year: work?.year,
+        ratio: work ? work.width / work.height : undefined,
+      },
+    };
   }
   return { entry: entry.label, item: entry };
 }
@@ -124,7 +145,8 @@ function ImageSlot({ item }: { item: RowItem }) {
       <FadeInImage
         src={withBasePath(item.src)}
         alt={item.label}
-        className="guide block h-auto w-full select-none md:h-auto md:max-h-[80vh] md:max-w-full md:min-h-0 md:w-auto"
+        style={item.ratio ? { aspectRatio: `${item.ratio}` } : undefined}
+        className="guide skeleton ws-img block h-auto w-full select-none md:h-auto md:max-h-[80vh] md:max-w-full md:min-h-0 md:w-auto"
       />
     );
   }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import type { CSSProperties } from "react";
 
 // Fades the image in via `.fade-in.is-visible` when it scrolls into view.
 // Falls back to immediately visible if IntersectionObserver is unavailable.
@@ -8,9 +9,10 @@ interface FadeInImageProps {
   src: string;
   alt: string;
   className?: string;
+  style?: CSSProperties;
 }
 
-export default function FadeInImage({ src, alt, className = "" }: FadeInImageProps) {
+export default function FadeInImage({ src, alt, className = "", style }: FadeInImageProps) {
   const ref = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
@@ -44,6 +46,7 @@ export default function FadeInImage({ src, alt, className = "" }: FadeInImagePro
       src={src}
       alt={alt}
       draggable={false}
+      style={style}
       className={`${className} fade-in`}
     />
   );
